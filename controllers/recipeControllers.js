@@ -1,4 +1,5 @@
 const recipeModel = require("../models/recipeModel");
+const commentModel = require("../models/commentModel");
 
 function sendPaginatedResponse(res, recipes, page, limit, total) {
   return res.json({
@@ -68,6 +69,39 @@ const recipeController = {
       return res.status(500).json({ error: "Erro ao carregar as receitas." });
     }
   },
+
+  async show(req, res) {
+    try {
+      const { id } = req.params;
+      const recipe = await recipeModel.findById(id);
+
+      const comments = await commentModel.findByRecipeId(id);
+
+      return res.json({ recipe, comments });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erro ao carregar a receita." });
+    }
+  },
+
+  async addComment(req, res) {
+    try {
+      const { id } = req.params;
+      const { author, content } = req.body;
+
+      const newComment = await commentModel.create({
+        recipeId: id,
+        author,
+        content,
+      });
+
+      return res.status(201).json(newComment);
+      
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erro ao adicionar o comentário." });
+    }
+  }
 };
 
 module.exports = recipeController;
