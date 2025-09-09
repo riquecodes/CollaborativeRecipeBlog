@@ -1,7 +1,7 @@
 const pool = require("../db");
-const Recipe = require("../entities/Recipe");
+const Recipe = require("../entities/recipe");
 
-const RecipeModel = {
+const recipeModel = {
   async create({ title, ingredients, instructions, author, category }) {
     const [result] = await pool.query(
       `INSERT INTO recipes (title, ingredients, instructions, author, category)
@@ -37,26 +37,6 @@ const RecipeModel = {
     );
   },
 
-  async findRecipes(limit = 5, offset = 0) {
-    const [rows] = await pool.query(
-      "SELECT * FROM recipes ORDER BY createdAt DESC LIMIT ? OFFSET ?",
-      [limit, offset]
-    );
-
-    return rows.map(
-      (r) =>
-        new Recipe({
-          id: r.id,
-          title: r.title,
-          ingredients: JSON.parse(r.ingredients),
-          instructions: r.instructions,
-          author: r.author,
-          category: r.category,
-          createdAt: r.createdAt,
-        })
-    );
-  },
-
   async findById(id) {
     const [rows] = await pool.query("SELECT * FROM recipes WHERE id = ?", [id]);
     if (rows.length === 0) return null;
@@ -72,13 +52,19 @@ const RecipeModel = {
     });
   },
 
-  async findByCategory(category) {
+  async findRecipesWithPagination(limit = 6, offset = 0) {
     const [rows] = await pool.query(
-      "SELECT * FROM recipes WHERE category = ? ORDER BY createdAt DESC",
+      "SELECT * FROM recipes ORDER BY createdAt DESC LIMIT ? OFFSET ?",
+      [limit, offset]
+    );
+
+    const [[{ total }]] = await pool.query(
+      `SELECT COUNT(*) AS total FROM recipes 
+       WHERE category = ?`,
       [category]
     );
 
-    return rows.map(
+    const recipes = rows.map(
       (r) =>
         new Recipe({
           id: r.id,
@@ -90,20 +76,57 @@ const RecipeModel = {
           createdAt: r.createdAt,
         })
     );
+
+    return { recipes, total }
   },
 
-  async search(term) {
+  async findByCategoryWithPagination(category, limit = 6, offset = 0) {
+    const [rows] = await pool.query(
+      "SELECT * FROM recipes WHERE category = ? ORDER BY createdAt DESC LIMIT ? OFFSET ?",
+      [category, limit, offset]
+    );
+
+    const [[{ total }]] = await pool.query(
+      `SELECT COUNT(*) AS total FROM recipes 
+       WHERE category = ?`,
+      [category]
+    );
+
+    const recipes = rows.map(
+      (r) =>
+        new Recipe({
+          id: r.id,
+          title: r.title,
+          ingredients: JSON.parse(r.ingredients),
+          instructions: r.instructions,
+          author: r.author,
+          category: r.category,
+          createdAt: r.createdAt,
+        })
+    );
+
+    return { recipes, total }
+  },
+
+  async searchWithPagination(term, limit = 6, offset = 0) {
     const searchTerm = `%${term}%`;
 
     const [rows] = await pool.query(
-      `SELECT * FROM recipes 
-     WHERE title LIKE ? 
+     `SELECT * FROM recipes 
+     WHERE title LIKE ?
      OR JSON_SEARCH(ingredients, 'all', ?) IS NOT NULL
-     ORDER BY createdAt DESC`,
+     ORDER BY createdAt DESC LIMIT = ? OFFSET = ?`,
+      [searchTerm, term, limit, offset]
+    );
+
+    const [[{ total }]] = await pool.query(
+      `SELECT COUNT(*) AS total FROM recipes 
+       WHERE title LIKE ? 
+       OR JSON_SEARCH(ingredients, 'all', ?) IS NOT NULL`,
       [searchTerm, term]
     );
 
-    return rows.map(
+    const recipes = rows.map(
       (r) =>
         new Recipe({
           id: r.id,
@@ -115,7 +138,9 @@ const RecipeModel = {
           createdAt: r.createdAt,
         })
     );
+
+    return { recipes, total };
   },
 };
 
-module.exports = RecipeModel;
+module.exports = recipeModel;
