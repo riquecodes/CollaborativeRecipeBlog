@@ -1,7 +1,7 @@
 const pool = require("../db");
-const Comment = require("../entities/Comment");
+const Comment = require("../domain/comment");
 
-const CommentModel = {
+const commentModel = {
   async create({ recipeId, author, content }) {
     const [result] = await pool.query(
       `INSERT INTO comments (recipeId, author, content)
@@ -33,6 +33,6 @@ const CommentModel = {
         })
     );
   },
-
-  
 };
+
+module.exports = commentModel;

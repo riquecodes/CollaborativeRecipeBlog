@@ -1,5 +1,5 @@
 const pool = require("../db");
-const Recipe = require("../entities/recipe");
+const Recipe = require("../domain/recipe");
 
 const recipeModel = {
   async create({ title, ingredients, instructions, author, category }) {
