@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Receitas</title>
+</head>
+<body>
+    <section id="searchBar">
+        <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Buscar por título ou ingrediente...">
+        <button type="submit">Pesquisar</button>
+      </form>
+    </section>
+
+    <section id="categories">
+        <form id="categoryForm">
+            <input type="checkbox" value="Doce" id="doce">
+            <label for="doce">Doces</label><br>
+            <input type="checkbox" value="Salgados" id="salgados">
+            <label for="salgados">Salgados</label><br>
+            <input type="checkbox" value="Bebidas" id="bebidas">
+            <label for="bebidas">Bebidas</label><br>
+        </form>
+    </section>
+
+    <section id="recipesList">
+        <h2>Receitas</h2>
+        <div id="recipesContainer"></div>
+    </section>
+
+    <nav id="pagination">
+        <button id="pagAnterior">Anterior</button>
+        <span id="pagInfo">Página 1</span>
+        <button id="pagProximo">Próximo</button>
+    </nav>
+</body>
+</html>

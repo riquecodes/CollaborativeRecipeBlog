@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Receitas</title>
+</head>
+<body>
+    <h2>Nova Receita</h2>
+
+    <form id="newRecipeForm">
+        <label for="title">Nome da Receita</label>
+        <input type="text" id="title" placeholder="Título" required>
+        <label for="ingredients">Ingredientes</label>
+        <textarea id="ingredients" placeholder="Ingredientes" required></textarea>
+        <label for="instructions">Modo de Preparo</label>
+        <textarea name="instructions" placeholder="Modo Preparo" required></textarea>
+        <label for="author">Autor</label>
+        <input type="text" id="author" placeholder="Autor" required>
+        <label for="category">Categoria</label>
+        <select id="category" name="category" required>
+        <option value="">Selecione</option>
+        <option value="Doce">Doce</option>
+        <option value="Salgado">Salgado</option>
+        <option value="Bebida">Bebida</option>
+        </select>
+
+        <button type="submit">Criar Receita</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        const form = document.getElementById('newRecipeForm');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const ingredients = document.getElementById('ingredients').value;
+            const instructions = document.querySelector('textarea[name="instructions"]').value;
+            const author = document.getElementById('author').value;
+            const category = document.getElementById('category').value;
+
+            try {
+                const response = await fetch("http://localhost:3000/recipes", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, ingredients, instructions, author, category })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    messageDiv.textContent = 'Receita criada com sucesso!';
+                    form.reset();
+                } else {
+                    messageDiv.textContent = `Erro: ${data.message}`;
+                }
+            }catch (error) {
+                messageDiv.textContent = 'Erro ao criar receita.';
+            }
+        })
+    </script>
+</body>
+</html>
