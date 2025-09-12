@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes da Receita</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" type="image/png" href="/favicon.ico">
+</head>
+<body>
+  <h1 id="recipeTitle">Detalhes da Receita</h1>
+  <p><strong>Autor:</strong> <span id="recipeAuthor"></span></p>
+  <p><strong>Categoria:</strong> <span id="recipeCategory"></span></p>
+
+  <h2>Ingredientes</h2>
+  <ul id="ingredientsList"></ul>
+
+  <h2>Instruções</h2>
+  <p id="instructions"></p>
+
+  <a href="/index.html">Voltar para a lista de receitas</a>
+
+  <h2>Comentários</h2>
+  <div id="commentsContainer"></div>
+
+  <h3>Adicionar Comentário</h3>
+  <form id="commentForm">
+    <textarea id="commentContent" placeholder="Seu comentário" required></textarea>
+    <button type="submit">Enviar Comentário</button>
+  </form>
+
+  <script>
+    async function loadRecipe() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      // busca receita e comentários
+      const res = await fetch(`/recipes/${id}`);
+      const data = await res.json();
+
+      // preenche receita
+      document.getElementById("recipeTitle").textContent = data.recipe.title;
+      document.getElementById("recipeAuthor").textContent = data.recipe.author;
+      document.getElementById("recipeCategory").textContent = data.recipe.category;
+      document.getElementById("instructions").textContent = data.recipe.instructions;
+
+      const ingredientsEl = document.getElementById("ingredientsList");
+      ingredientsEl.innerHTML = "";
+      data.recipe.ingredients.forEach(ing => {
+        const li = document.createElement("li");
+        li.textContent = ing;
+        ingredientsEl.appendChild(li);
+      });
+
+      // preenche comentários
+      const commentsContainer = document.getElementById("commentsContainer");
+      commentsContainer.innerHTML = "";
+      data.comments.forEach(c => {
+        const div = document.createElement("div");
+        div.innerHTML = `</strong> ${c.content}`;
+        commentsContainer.appendChild(div);
+      });
+
+      // formulário de comentário
+      const form = document.getElementById("commentForm");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const content = document.getElementById("commentContent").value;
+
+        const response = await fetch(`/recipes/${id}/comments`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content })
+        });
+
+        if (response.ok) {
+          const newComment = await response.json();
+          const div = document.createElement("div");
+          div.innerHTML = `</strong> ${newComment.content}`;
+          commentsContainer.appendChild(div);
+          form.reset();
+        } else {
+          alert("Erro ao adicionar comentário");
+        }
+      });
+    }
+    loadRecipe();
+  </script>
+</body>
+</html>
