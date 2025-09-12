@@ -14,14 +14,10 @@
     </section>
 
     <section id="categories">
-        <form id="categoryForm">
-            <input type="checkbox" value="Doce" id="doce">
-            <label for="doce">Doces</label><br>
-            <input type="checkbox" value="Salgados" id="salgados">
-            <label for="salgados">Salgados</label><br>
-            <input type="checkbox" value="Bebidas" id="bebidas">
-            <label for="bebidas">Bebidas</label><br>
-        </form>
+        <button type="button" class="category-btn" data-category="Doce">Doces</button>
+        <button type="button" class="category-btn" data-category="Salgados">Salgados</button>
+        <button type="button" class="category-btn" data-category="Bebidas">Bebidas</button>
+        <button type="button" class="category-btn" data-category="">Todas</button>
     </section>
 
     <section id="recipesList">
@@ -34,5 +30,104 @@
         <span id="pagInfo">Página 1</span>
         <button id="pagProximo">Próximo</button>
     </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const recipesContainer = document.getElementById('recipesContainer');
+            const searchForm = document.getElementById('searchForm');
+            const searchInput = document.getElementById('searchInput');
+            const categoryForm = document.getElementById('.category-btn');
+            const pagAnterior = document.getElementById('pagAnterior');
+            const pagProximo = document.getElementById('pagProximo');
+            const pagInfo = document.getElementById('pagInfo');
+
+            let currentPage = 1;
+            const recipesPerPage = 6;
+            let totalRecipes = 0;
+
+            const fetchRecipes = async (page = 1, query = '', categories = []) => {
+                let url = `/api/recipes?page=${page}&limit=${recipesPerPage}`;
+                if (query) url += `&search=${encodeURIComponent(query)}`;
+                if (categories.length) url += `&categories=${encodeURIComponent(categories.join(','))}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+                totalRecipes = data.total;
+                return data.recipes;
+            };
+
+            //carrega receitas 
+            const renderRecipes = (recipes) => {
+                recipesContainer.innerHTML = '';
+                if (recipes.length === 0) {
+                    recipesContainer.innerHTML = '<p>Nenhuma receita encontrada.</p>';
+                    return;
+                }
+                recipes.forEach(recipe => {
+                    const recipeDiv= document.createElement('div');
+                    recipeDiv.className = 'recipe';
+                    recipeDiv.innerHTML = `
+                        <h3>${recipe.title}</h3>
+                        <p>${recipe.ingredients}</p>
+                        <p>${recipe.instructions}</p>
+                        <p>${recipe.author}</p>
+                        <p><strong>Categoria:</strong> ${recipe.category}</p>
+                    `;
+                    recipesContainer.appendChild(recipeDiv);
+                });
+            }
+            //atualiza paginação
+            const updatePagination = () => {
+                const totalPages = Math.ceil(totalRecipes / recipesPerPage);
+                pagInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+                pagAnterior.disabled = currentPage === 1;
+                pagProximo.disabled = currentPage === totalPages || totalPages === 0;
+            };
+
+            //carrega receitas iniciais
+            const loadRecipes = async (query = '', categories = []) => {
+                const query = query || searchInput.value.trim();
+                const recipes = await fetchRecipes(currentPage, query, categories);
+                renderRecipes(recipes);
+                updatePagination();
+            };
+
+            //filtro por categoria
+            document.querySelectorAll('.category-btn').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const category = button.dataset.category;
+                    currentPage = 1;
+                    const response = await fetch(`/recipes?page=1&category=${encodeURIComponent(category)}&limit=${recipesPerPage}`);
+                    await loadRecipes('', category ? [category] : []);
+                });
+            });
+
+            //filtro por busca
+            searchForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const query = searchInput.value.trim();
+                currentPage = 1;
+                if (!query) return;
+                loadRecipes(query, selectedCategory ? [selectedCategory] : []);
+                searchInput.value = '';
+            });
+            //paginação
+            pagAnterior.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadRecipes(searchInput.value.trim(), selectedCategory ? [selectedCategory] : []);
+                }
+                });
+
+            pagProximo.addEventListener('click', () => {
+                const totalPages = Math.ceil(totalRecipes / recipesPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        loadRecipes(searchInput.value.trim(), selectedCategory ? [selectedCategory] : []);
+                    }
+            });
+            loadRecipes();
+        });
+    </script>
 </body>
 </html>
