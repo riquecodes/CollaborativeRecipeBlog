@@ -40,6 +40,7 @@
             const pagAnterior = document.getElementById('pagAnterior');
             const pagProximo = document.getElementById('pagProximo');
             const pagInfo = document.getElementById('pagInfo');
+            let selectedCategory = '';
 
             let currentPage = 1;
             const recipesPerPage = 6;
@@ -95,10 +96,9 @@
             //filtro por categoria
             document.querySelectorAll('.category-btn').forEach(button => {
                 button.addEventListener('click', async () => {
-                    const category = button.dataset.category;
+                    selectedCategory = button.dataset.category;
                     currentPage = 1;
-                    const response = await fetch(`/recipes?page=1&category=${encodeURIComponent(category)}&limit=${recipesPerPage}`);
-                    await loadRecipes('', category ? [category] : []);
+                    await loadRecipes('', selectedCategory ? [selectedCategory] : []);
                 });
             });
 
@@ -109,7 +109,6 @@
                 currentPage = 1;
                 if (!query) return;
                 loadRecipes(query, selectedCategory ? [selectedCategory] : []);
-                searchInput.value = '';
             });
             //paginação
             pagAnterior.addEventListener('click', () => {
