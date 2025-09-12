@@ -15,6 +15,10 @@
       </form>
     </section>
 
+    <section id="createRecipe">
+        <button id="createRecipeBtn">Criar Receita</button>
+    </section>
+
     <section id="categories">
         <button type="button" class="category-btn" data-category="Doce">Doces</button>
         <button type="button" class="category-btn" data-category="Salgados">Salgados</button>
@@ -128,6 +132,9 @@
                     }
             });
             loadRecipes();
+        });
+        document.getElementById('createRecipeBtn').addEventListener('click', () => {
+            window.location.href = '/createRecipe'; 
         });
     </script>
 </body>
