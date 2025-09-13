@@ -15,7 +15,7 @@ router.get('/recipes/:id', checkRecipeExists, recipeController.show);
 router.post('/recipes/:id/comments', checkRecipeExists, validateComment, recipeController.addComment);
 
 router.get('/createRecipe', (req, res) => {
-    res.sendFile(path.join(__dirname, './views/createRecipe.html')); // criar receita 
+    res.sendFile(path.join(__dirname, '../views/createRecipe.html')); 
 });
 
 module.exports = router;
