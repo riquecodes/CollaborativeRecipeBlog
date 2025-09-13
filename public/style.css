@@ -1,4 +1,3 @@
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -7,19 +6,17 @@
 }
 
 body {
-  background-color: #f8f6fc; /* roxo bem clarinho no fundo */
-  color: #2c003e; /* roxo escuro para texto */
+  background-color: #f8f6fc;
+  color: #2c003e;
   line-height: 1.6;
   padding: 20px;
 }
 
-/* Cabeçalhos */
 h1, h2, h3 {
-  color: #5e17eb; /* roxo vibrante */
+  color: #5e17eb;
   margin-bottom: 10px;
 }
 
-/* Links */
 a {
   color: #5e17eb;
   text-decoration: none;
@@ -29,7 +26,6 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Botões */
 button {
   background-color: #5e17eb;
   color: white;
@@ -44,7 +40,6 @@ button:hover {
   background-color: #4813b8;
 }
 
-/* Formulários */
 form {
   margin: 15px 0;
   display: flex;
@@ -62,14 +57,12 @@ textarea {
   resize: vertical;
 }
 
-/* Listas */
 ul {
   list-style: disc inside;
   margin: 10px 0 20px 0;
   padding-left: 15px;
 }
 
-/* Container dos comentários */
 #commentsContainer div {
   background: #eee6fb;
   border: 1px solid #d1c2f0;
@@ -78,12 +71,10 @@ ul {
   margin-bottom: 8px;
 }
 
-/* Seções */
 section {
   margin-bottom: 25px;
 }
 
-/* Paginação (se usar no index) */
 #pagination {
   display: flex;
   justify-content: center;
@@ -94,4 +85,175 @@ section {
 #pagInfo {
   font-weight: bold;
   color: #2c003e;
+}
+
+#newRecipeForm {
+  max-width: 800px;
+  margin: 40px auto;
+  gap: 0;
+}
+
+#newRecipeForm label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #2c003e;
+}
+
+#newRecipeForm input[type="text"],
+#newRecipeForm textarea,
+#newRecipeForm select {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  margin-bottom: 25px;
+  border: 1px solid #d1c2f0;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+#newRecipeForm textarea {
+  height: 150px;
+  resize: vertical;
+}
+
+#newRecipeForm button {
+  width: 100%;
+  padding: 18px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background-color: #5e17eb;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#newRecipeForm button:hover {
+  background-color: #4813b8;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  width: 400px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+#closeModal {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 26px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+}
+
+#modalTitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: #d9534f;
+  margin-bottom: 15px;
+}
+
+#modalMessage {
+  font-size: 18px;
+  color: #333;
+}
+
+#searchBar {
+  max-width: 900px;
+  margin: 0 auto 25px auto;
+}
+#searchForm {
+  display: flex;
+  gap: 10px;
+}
+#searchInput {
+  flex-grow: 1;
+  padding: 12px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #d1c2f0;
+}
+#searchForm button {
+  padding: 12px 25px;
+  font-size: 16px;
+}
+
+#createRecipe {
+  max-width: 900px;
+  margin: 0 auto 15px auto;
+}
+#createRecipeBtn {
+  font-size: 15px;
+  font-weight: bold;
+  padding: 10px 20px;
+}
+#categories {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.category-btn {
+  font-size: 14px;
+}
+
+#recipesList {
+  max-width: 900px;
+  margin: 40px auto;
+}
+#recipesContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+.recipe {
+  background-color: #fff;
+  border: 1px solid #d1c2f0;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.recipe:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+.recipe h3 {
+  font-size: 22px;
+}
+.recipe p {
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #444;
+}
+.recipe p:last-child {
+  margin-bottom: 0;
+}
+
+#pagination button {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+#pagInfo {
+  font-size: 18px;
 }

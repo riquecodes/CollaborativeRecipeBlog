@@ -8,7 +8,7 @@ function validateRecipe(req, res, next) {
   if (!category || category.trim() === "") {
     return res.status(400).send({ error: "A categoria deve ser selecionada." });
   }
-  
+
   if (!Array.isArray(ingredients) || ingredients.length === 0) {
     return res.status(400).send({ error: "Informe pelo menos 1 ingrediente." });
   }
@@ -16,7 +16,7 @@ function validateRecipe(req, res, next) {
   if (!instructions || instructions.trim().length < 40) {
     return res
       .status(400)
-      .send({ error: "as instruções devem ter pelo menos 40 caracteres." });
+      .send({ error: "As instruções devem ter pelo menos 40 caracteres." });
   }
   next();
 }
@@ -28,11 +28,9 @@ function validateComment(req, res, next) {
   }
 
   if (!content || content.trim().length < 10) {
-    return res
-      .status(400)
-      .send({
-        error: "O conteúdo do comentário deve ter pelo menos 10 caracteres.",
-      });
+    return res.status(400).send({
+      error: "O conteúdo do comentário deve ter pelo menos 10 caracteres.",
+    });
   }
   next();
 }

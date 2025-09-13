@@ -1,74 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nova Receitas</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="icon" type="image/png" href="/favicon.ico">
-</head>
-<body>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/png" href="/favicon.ico" />
+  </head>
+  <body>
     <h2>Nova Receita</h2>
 
     <form id="newRecipeForm">
-        <label for="title">Nome da Receita</label>
-        <input type="text" id="title" placeholder="Título" required>
-        <label for="ingredients">Ingredientes</label>
-        <textarea id="ingredients" placeholder="Ingredientes (separe por vírgula)" required></textarea>
-        <label for="instructions">Modo de Preparo</label>
-        <textarea name="instructions" placeholder="Modo Preparo" required></textarea>
-        <label for="author">Autor</label>
-        <input type="text" id="author" placeholder="Autor" required>
-        <label for="category">Categoria</label>
-        <select id="category" name="category" required>
+      <label for="title">Nome da Receita</label>
+      <input type="text" id="title" placeholder="Título" required />
+      <label for="ingredients">Ingredientes</label>
+      <textarea
+        id="ingredients"
+        placeholder="Ingredientes (separe por vírgula)"
+        required
+      ></textarea>
+      <label for="instructions">Modo de Preparo</label>
+      <textarea
+        name="instructions"
+        placeholder="Modo Preparo"
+        required
+      ></textarea>
+      <label for="author">Autor</label>
+      <input type="text" id="author" placeholder="Autor" required />
+      <label for="category">Categoria</label>
+      <select id="category" name="category" required>
         <option value="">Selecione</option>
-        <option value="Doce">Doce</option>
-        <option value="Salgado">Salgado</option>
-        <option value="Bebida">Bebida</option>
-        </select>
+        <option value="Massas">Massas</option>
+        <option value="Carnes">Carnes</option>
+        <option value="Vegano">Vegano</option>
+        <option value="Saladas">Saladas</option>
+        <option value="Sobremesas">Sobremesas</option>
+      </select>
 
-        <button type="submit">Criar Receita</button>
+      <button type="submit">Criar Receita</button>
     </form>
 
-    <div id="message"></div>
+    <div id="errorModal" class="modal">
+      <div class="modal-content">
+        <span id="closeModal">&times;</span>
+        <h2 id="modalTitle">ERRO</h2>
+        <p id="modalMessage"></p>
+      </div>
+    </div>
 
     <script>
-        const form = document.getElementById('newRecipeForm');
-        const messageDiv = document.getElementById('message');
+      const form = document.getElementById("newRecipeForm");
+      const modal = document.getElementById("errorModal");
+      const modalMessage = document.getElementById("modalMessage");
+      const closeModal = document.getElementById("closeModal");
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-            const title = document.getElementById('title').value;
-            const ingredientsInput = document.getElementById('ingredients').value;
-            const instructions = document.querySelector('textarea[name="instructions"]').value;
-            const author = document.getElementById('author').value;
-            const category = document.getElementById('category').value;
+        const title = document.getElementById("title").value;
+        const ingredientsInput = document.getElementById("ingredients").value;
+        const instructions = document.querySelector(
+          'textarea[name="instructions"]'
+        ).value;
+        const author = document.getElementById("author").value;
+        const category = document.getElementById("category").value;
 
-            const ingredients = ingredientsInput
-                .split(',')
-                .map(i => i.trim())
-                .filter(i => i !== ''); //transforma em array 
+        const ingredients = ingredientsInput
+          .split(",")
+          .map((i) => i.trim())
+          .filter((i) => i !== ""); //transforma em array
 
-            try {
-                const response = await fetch("http://localhost:3000/recipes", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ title, ingredients, instructions, author, category })
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    messageDiv.textContent = 'Receita criada com sucesso!';
-                    form.reset();
-                } else {
-                    messageDiv.textContent = `Erro: ${data.message}`;
-                }
-            }catch (error) {
-                messageDiv.textContent = 'Erro ao criar receita.';
-            }
-        })
+        function showModal(message) {
+          modalMessage.textContent = message;
+          modal.style.display = "block";
+        }
+
+        closeModal.addEventListener("click", () => {
+          modal.style.display = "none";
+        });
+
+        window.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            modal.style.display = "none";
+          }
+        });
+
+        try {
+          const response = await fetch("http://localhost:3000/recipes", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title,
+              ingredients,
+              instructions,
+              author,
+              category,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showModal("Receita criada com sucesso!");
+            form.reset();
+          } else {
+            showModal(`${data.error || "Erro ao criar receita."}`);
+          }
+        } catch (error) {
+          showModal("Erro ao criar receita.");
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
