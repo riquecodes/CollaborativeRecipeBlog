@@ -15,7 +15,7 @@ function sendPaginatedResponse(res, recipes, page, limit, total) {
 const recipeController = {
   async create(req, res) {
     try {
-      const { title, ingredients, instructions, author, category } = req.body;
+      let { title, ingredients, instructions, author, category } = req.body;
 
       const newRecipe = await recipeModel.create({
         title,
@@ -27,6 +27,7 @@ const recipeController = {
 
       return res.status(201).json(newRecipe);
     } catch (error) {
+      console.error("Erro ao criar receita:", error);
       return res.status(400).json({ error: error.message });
     }
   },

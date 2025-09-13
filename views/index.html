@@ -93,7 +93,7 @@
 
             //carrega receitas iniciais
             const loadRecipes = async (query = '', categories = []) => {
-                const query = query || searchInput.value.trim();
+                query = query || searchInput.value.trim();
                 const recipes = await fetchRecipes(currentPage, query, categories);
                 renderRecipes(recipes);
                 updatePagination();

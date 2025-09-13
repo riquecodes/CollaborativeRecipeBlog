@@ -1,7 +1,6 @@
 {
   "name": "collaborativerecipeblog",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,5 +14,14 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "mysql2": "^3.14.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/riquecodes/CollaborativeRecipeBlog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/riquecodes/CollaborativeRecipeBlog/issues"
+  },
+  "homepage": "https://github.com/riquecodes/CollaborativeRecipeBlog#readme",
+  "description": ""
 }

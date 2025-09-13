@@ -14,7 +14,7 @@
         <label for="title">Nome da Receita</label>
         <input type="text" id="title" placeholder="Título" required>
         <label for="ingredients">Ingredientes</label>
-        <textarea id="ingredients" placeholder="Ingredientes" required></textarea>
+        <textarea id="ingredients" placeholder="Ingredientes (separe por vírgula)" required></textarea>
         <label for="instructions">Modo de Preparo</label>
         <textarea name="instructions" placeholder="Modo Preparo" required></textarea>
         <label for="author">Autor</label>
@@ -40,10 +40,15 @@
             e.preventDefault();
 
             const title = document.getElementById('title').value;
-            const ingredients = document.getElementById('ingredients').value;
+            const ingredientsInput = document.getElementById('ingredients').value;
             const instructions = document.querySelector('textarea[name="instructions"]').value;
             const author = document.getElementById('author').value;
             const category = document.getElementById('category').value;
+
+            const ingredients = ingredientsInput
+                .split(',')
+                .map(i => i.trim())
+                .filter(i => i !== ''); //transforma em array 
 
             try {
                 const response = await fetch("http://localhost:3000/recipes", {

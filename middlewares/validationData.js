@@ -1,5 +1,5 @@
 function validateRecipe(req, res, next) {
-  const { title, ingredients, instructions, category } = req.body;
+  let { title, ingredients, instructions, category } = req.body;
   if (!title || title.trim() === "") {
     return res.status(400).send({ error: "O título é obrigatório." });
   }
@@ -7,7 +7,7 @@ function validateRecipe(req, res, next) {
   if (!category || category.trim() === "") {
     return res.status(400).send({ error: "A categoria deve ser selecionada." });
   }
-
+  
   if (!Array.isArray(ingredients) || ingredients.length === 0) {
     return res.status(400).send({ error: "Informe pelo menos 1 ingrediente." });
   }
