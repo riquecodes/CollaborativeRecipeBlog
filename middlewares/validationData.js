@@ -1,4 +1,5 @@
 function validateRecipe(req, res, next) {
+  console.log("Recebido no validateRecipe:", req.body);
   let { title, ingredients, instructions, category } = req.body;
   if (!title || title.trim() === "") {
     return res.status(400).send({ error: "O título é obrigatório." });

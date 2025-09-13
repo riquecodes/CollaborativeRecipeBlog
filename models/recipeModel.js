@@ -53,18 +53,14 @@ const recipeModel = {
   },
 
   async findRecipesWithPagination(limit = 6, offset = 0) {
-    const [rows] = await pool.query(
-      "SELECT * FROM recipes ORDER BY createdAt DESC LIMIT ? OFFSET ?",
-      [limit, offset]
-    );
+  const [rows] = await pool.query(
+    "SELECT * FROM recipes ORDER BY createdAt DESC LIMIT ? OFFSET ?",
+    [limit, offset]
+  );
 
-    const [[{ total }]] = await pool.query(
-      `SELECT COUNT(*) AS total FROM recipes 
-       WHERE category = ?`,
-      [category]
-    );
+  const [[{ total }]] = await pool.query(`SELECT COUNT(*) AS total FROM recipes`);
 
-    const recipes = rows.map(
+  const recipes = rows.map(
       (r) =>
         new Recipe({
           id: r.id,
@@ -77,7 +73,7 @@ const recipeModel = {
         })
     );
 
-    return { recipes, total }
+  return { recipes, total };
   },
 
   async findByCategoryWithPagination(category, limit = 6, offset = 0) {
